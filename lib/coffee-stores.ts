@@ -1,10 +1,4 @@
-type MapboxType = {
-  id: string;
-  properties: {
-    address: string;
-  };
-  text: string;
-};
+import { MapboxType } from '@/types';
 
 const transformCoffeeData = (result: MapboxType) => {
   return {
@@ -15,7 +9,7 @@ const transformCoffeeData = (result: MapboxType) => {
   };
 };
 
-export async function getCoffeeStores() {
+export async function fetchCoffeeStores() {
   try {
     const response = await fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/coffee.json?limit=6&

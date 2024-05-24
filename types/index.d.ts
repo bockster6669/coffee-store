@@ -10,3 +10,11 @@ export type CardType = {
   imgUrl: string;
   href: string;
 };
+
+export type MapboxType = {
+  id: string;
+  properties: {
+    address: string;
+  };
+  text: string;
+};
