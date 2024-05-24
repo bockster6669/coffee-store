@@ -1,28 +1,23 @@
-import Banner from "@/components/Banner";
-import Card from "@/components/Card.server";
+import Banner from '@/components/Banner';
+import Card from '@/components/Card.server';
+import { getCoffeeStores } from '@/lib/coffee-stores';
+import { coffeeStoreType } from '@/types';
 
-export default function Home() {
-  
-  const coffeeStores = [
-    {
-      id: 1,
-      name: "Starbuks",
-      imgUrl: '/static/hero-image.png'
-    }
-  ]
+export default async function Home() {
+  const coffeeStores = await getCoffeeStores();
 
   return (
     <div className="mb-56">
       <main className="mx-auto mt-10 max-w-6xl px-4">
-        <Banner/>
+        <Banner />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-2 lg:grid-cols-3 lg:gap-6">
-          {coffeeStores.map((coffeeStore, idx) => (
+          {coffeeStores.map((coffeeStore: coffeeStoreType, idx:number) => (
             <Card
               key={`${coffeeStore.name}-${coffeeStore.id}`}
               name={coffeeStore.name}
               imgUrl={coffeeStore.imgUrl}
-              href={`coffe-store/2`}
+              href={`coffee-store/${coffeeStore.id}`}
             />
           ))}
         </div>
@@ -30,11 +25,3 @@ export default function Home() {
     </div>
   );
 }
-
-// function getCurrentTime() {
-//   const now = new Date();
-//   const hours = now.getHours();
-//   const minutes = now.getMinutes();
-//   const seconds = now.getSeconds();
-//   return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-// }

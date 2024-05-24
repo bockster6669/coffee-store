@@ -1,0 +1,48 @@
+type MapboxType = {
+  id: string;
+  properties: {
+    address: string;
+  };
+  text: string;
+};
+
+const transformCoffeeData = (result: MapboxType) => {
+  return {
+    id: result.id,
+    address: result.properties?.address,
+    name: result.text,
+    imgURL: '',
+  };
+};
+
+export async function getCoffeeStores() {
+  try {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/coffee.json?limit=6&
+                  proximity=-79.3789680885594%2C43.653833032607096&access_token=${process.env.MAPBOX_API}`
+    );
+    const data = await response.json();
+
+    return data.features.map((result: MapboxType) =>
+      transformCoffeeData(result)
+    );
+  } catch (error) {
+    console.log('Error while catching coffee stores data', error);
+  }
+}
+
+export async function fetchCoffeeStore(id: string) {
+  try {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${id}.json?proximity=ip&access_token=${process.env.MAPBOX_API}`
+    );
+    const data = await response.json();
+
+    const coffeeStore = data.features.map((result: MapboxType) =>
+      transformCoffeeData(result)
+    );
+    return coffeeStore.length > 0 ? coffeeStore[0] : {};
+  } catch (error) {
+    console.log('Error while fetching coffee store data', error);
+  }
+}
