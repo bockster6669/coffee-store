@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React from 'react';
 
 export async function generateStaticParams() {
-  const coffeeStores = await fetchCoffeeStores();
+  const coffeeStores = await fetchCoffeeStores('-79.3789680885594%2C43.653833032607096', 6);
 
   return coffeeStores.map((coffeeStore: coffeeStoreType) => ({
     id: coffeeStore.id,
