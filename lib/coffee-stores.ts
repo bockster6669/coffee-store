@@ -42,7 +42,8 @@ export const fetchCoffeeStores = async (longLat: string, limit: number) => {
   }
 };
 
-export const fetchCoffeeStore = async (id: string) => {
+
+export const fetchCoffeeStore = async (id: string, queryId: string) => {
   try {
     const response = await fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${id}.json?proximity=ip&access_token=${process.env.MAPBOX_API}`
@@ -51,7 +52,7 @@ export const fetchCoffeeStore = async (id: string) => {
     const photos = await getListOfCoffeeStorePhotos();
 
     const coffeeStore = data.features.map((result: MapboxType, idx: number) =>
-      transformCoffeeData(1,result, photos)
+      transformCoffeeData(parseInt(queryId), result, photos)
     );
     return coffeeStore.length > 0 ? coffeeStore[0] : {};
   } catch (error) {

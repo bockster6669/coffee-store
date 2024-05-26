@@ -1,25 +1,40 @@
-import { fetchCoffeeStore, fetchCoffeeStores } from '@/lib/coffee-stores';
-import { coffeeStoreType } from '@/types';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
+import { fetchCoffeeStore, fetchCoffeeStores } from "@/lib/coffee-stores";
+import { CoffeeStoreType } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { createCoffeeStore } from "@/lib/airtable";
+import Upvote from "@/components/upvote.client";
 
 export async function generateStaticParams() {
-  const coffeeStores = await fetchCoffeeStores('-79.3789680885594%2C43.653833032607096', 6);
+  const coffeeStores = await fetchCoffeeStores(
+    "-79.3789680885594%2C43.653833032607096",
+    6
+  );
 
-  return coffeeStores.map((coffeeStore: coffeeStoreType) => ({
+  return coffeeStores.map((coffeeStore: CoffeeStoreType) => ({
     id: coffeeStore.id,
   }));
 }
 
-export default async function Page(props: { params: { id: string } }) {
+async function getData(id: string, queryId: string) {
+  const coffeeStoreFromMapbox = await fetchCoffeeStore(id, queryId);
+  const _createCoffeeStore = createCoffeeStore(coffeeStoreFromMapbox, id);
+  return coffeeStoreFromMapbox;
+}
+
+export default async function Page(props: {
+  params: { id: string };
+  searchParams: { id: string };
+}) {
   const {
     params: { id },
+    searchParams: { id: queryId },
   } = props;
 
-  const coffeeStore = await fetchCoffeeStore(id);
+  const coffeeStore = await getData(id, queryId);
 
-  const { name = '', address = '', imgUrl } = coffeeStore;
+  const { name = "", address = "", imgUrl } = coffeeStore;
 
   return (
     <div className="h-full pb-80">
@@ -34,12 +49,12 @@ export default async function Page(props: { params: { id: string } }) {
           <Image
             src={
               imgUrl ||
-              'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'
+              "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
             }
             width={740}
             height={360}
             className="max-h-[420px] min-w-full max-w-full rounded-lg border-2 sepia lg:max-w-[470px] "
-            alt={'Coffee Store Image'}
+            alt={"Coffee Store Image"}
           />
         </div>
 
@@ -55,7 +70,7 @@ export default async function Page(props: { params: { id: string } }) {
               <p className="pl-2">{address}</p>
             </div>
           )}
-          {/* <Upvote voting={voting} id={id} /> */}
+          <Upvote/>
         </div>
       </div>
     </div>
